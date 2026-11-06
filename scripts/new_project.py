@@ -25,6 +25,14 @@ import os
 import shutil
 import sys
 
+# Windows 中文控制台的 stdout 默认 GBK，脚本里的 ✓/✗ 会 UnicodeEncodeError。
+# 显式切到 UTF-8；管道/重定向场景同样受益。
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 SKILL_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -140,7 +148,10 @@ window.__SEG__ = { id: "_template", duration: 9.0, speech_end: 8.2, tail: 0.8 };
         theme_args += ["--preset", args.preset]
     else:
         theme_args += ["--preset", "violet"]
-    r = subprocess.run(theme_args, capture_output=True, text=True, encoding="utf-8")
+    # Windows 中文控制台默认 GBK：子进程输出中文错误信息时，父进程按 UTF-8 解码会崩。
+    # 显式把子进程的 stdio 钉成 UTF-8，父进程才能稳定拿到 make_theme.py 的输出。
+    r = subprocess.run(theme_args, capture_output=True, text=True, encoding="utf-8",
+                       env={**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"})
     print(r.stdout.strip() or r.stderr.strip())
 
     readme = f"""# {args.slug}（html-explainer 项目）
