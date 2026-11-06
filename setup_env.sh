@@ -7,7 +7,7 @@
 #   bash setup_env.sh --install  # 自检 + 联网安装缺的依赖
 #
 # 依赖清单：
-#   Python ≥3.9 + edge-tts(7.2.8 钉死) numpy pillow imageio-ffmpeg
+#   Python ≥3.9 + edge-tts(7.3.1 钉死；7.2.8 对微软端点已返回 403) numpy pillow imageio-ffmpeg
 #   Node ≥18（渲染器 .mjs）
 #   playwright-core（装在技能 node/ 下，纯 JS，可随技能打包带走）
 #   浏览器：Chrome 或 Edge（几乎必有）；都没有才下载 playwright chromium
@@ -35,24 +35,34 @@ PY=""
 for c in "$HOME/.workbuddy/binaries/python/envs/default/Scripts/python.exe" \
          "$HOME/.workbuddy/binaries/python/envs/default/bin/python" \
          python3 python; do
-  if command -v "$c" >/dev/null 2>&1 || [ -x "$c" ]; then PY="$c"; break; fi
+  if command -v "$c" >/dev/null 2>&1 || [ -x "$c" ]; then
+    # Windows 的 Microsoft Store 会放一个 python3 别名：command -v 找得到，
+    # 但执行只会提示去商店安装。必须实际跑一次版本检查，否则会选中这个假 Python。
+    if "$c" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 9) else 1)' >/dev/null 2>&1; then
+      PY="$c"; break
+    fi
+  fi
 done
 if [ -z "$PY" ]; then
   miss "找不到 Python ≥3.9"
 else
   ok "Python: $PY ($("$PY" -V 2>&1))"
-  if ! "$PY" -c "import edge_tts, numpy, PIL, imageio_ffmpeg" >/dev/null 2>&1; then
+  # 7.2.8 已对微软端点返回 403；只查 import 会漏掉旧版本，必须把最低版本一起查。
+  py_deps_ok() {
+    "$PY" -c 'import edge_tts, numpy, PIL, imageio_ffmpeg, sys; v=tuple(int(x) for x in edge_tts.__version__.split(".")[:3]); sys.exit(0 if v >= (7, 3, 1) else 1)' >/dev/null 2>&1
+  }
+  if ! py_deps_ok; then
     if [ $INSTALL -eq 1 ]; then
-      info "pip 安装 Python 依赖（钉死 edge-tts==7.2.8：7.x 升级常有破坏性）…"
-      "$PY" -m pip install --user "edge-tts==7.2.8" numpy pillow imageio-ffmpeg >/dev/null 2>&1 \
-        || "$PY" -m pip install "edge-tts==7.2.8" numpy pillow imageio-ffmpeg >/dev/null 2>&1 \
+      info "pip 安装 Python 依赖（钉死 edge-tts==7.3.1；7.2.8 对微软端点 403）…"
+      "$PY" -m pip install --user "edge-tts==7.3.1" numpy pillow imageio-ffmpeg >/dev/null 2>&1 \
+        || "$PY" -m pip install "edge-tts==7.3.1" numpy pillow imageio-ffmpeg >/dev/null 2>&1 \
         || warn "pip 安装失败，请手动装"
     fi
     # 装完再判定
-    if "$PY" -c "import edge_tts, numpy, PIL, imageio_ffmpeg" >/dev/null 2>&1; then
+    if py_deps_ok; then
       ok "Python 依赖齐全（edge-tts / numpy / pillow / imageio-ffmpeg）"
     else
-      miss "Python 依赖缺（edge-tts numpy pillow imageio-ffmpeg）"
+      miss "Python 依赖缺或 edge-tts < 7.3.1（edge-tts numpy pillow imageio-ffmpeg）"
     fi
   else
     ok "Python 依赖齐全（edge-tts / numpy / pillow / imageio-ffmpeg）"

@@ -88,11 +88,12 @@ agent_created: true
 bash <skill>/setup_env.sh            # 自检；--install 联网补装
 ```
 
-依赖：Python≥3.9（edge-tts==7.2.8 钉死 / numpy / pillow / imageio-ffmpeg）、Node≥18、
+依赖：Python≥3.9（edge-tts==7.3.1 钉死 / numpy / pillow / imageio-ffmpeg）、Node≥18、
 **火山引擎零额外依赖**（`tts_volcano.py` 只用标准库 `urllib`，不需要装任何 SDK）。
 Chrome 或 Edge（几乎必有；都没有才下载 playwright chromium ~115MB）、ffmpeg（PATH 或
 imageio-ffmpeg 静态二进制自动回退）。Windows 注意：项目路径全 ASCII；给 Node/Python
-传 `C:/...` 正斜杠路径；别用 heredoc 给 Python 传正则。
+传 `C:/...` 正斜杠路径；别用 heredoc 给 Python 传正则；中文控制台跑 Python 脚本建议
+设 `PYTHONUTF8=1=1`（CI 已设），否则 ✓/✗ 输出可能 `UnicodeEncodeError`。
 
 ## 命令流水线（项目目录内，顺序不能乱）
 

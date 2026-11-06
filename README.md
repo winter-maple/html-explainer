@@ -104,12 +104,14 @@ Windows 上 `~` 就是 `C:\Users\<你的用户名>`。
 > 另外，不少宿主会在技能目录名后加命名空间后缀（例如 WorkBuddy 装出来的是
 > `~/.workbuddy/skills/html-explainer__skillhub`），照实际目录改路径即可，技能本身不认名字。
 > 项目路径请保持**全 ASCII** —— Windows 的 ffmpeg 把 UTF-8 当 ANSI 读，中文路径会在渲染阶段炸。
+> **中文 Windows 控制台**：跑 Python 脚本前建议设 `PYTHONUTF8=1=1`（CI 已设）；
+> 脚本会打印 `✓/✗`，GBK 控制台下可能 `UnicodeEncodeError`。
 
 ### 环境要求
 
 | 项 | 最低 | 说明 |
 |---|---|---|
-| Python | 3.9+ | `edge-tts==7.2.8`（刻意钉死）、`numpy`、`pillow`、`imageio-ffmpeg`；火山引擎**零额外依赖**（只用标准库 `urllib`） |
+| Python | 3.9+ | `edge-tts==7.3.1`（刻意钉死）、`numpy`、`pillow`、`imageio-ffmpeg`；火山引擎**零额外依赖**（只用标准库 `urllib`） |
 | Node.js | 18+ | 渲染器与封面器用 |
 | 浏览器 | Chrome 或 Edge | 自动探测；都没有才下载 playwright chromium（约 115MB，只需一次） |
 | ffmpeg | 任意版本 | 先在 `PATH` 找；没有则用 `imageio-ffmpeg` 自带的静态二进制 |
@@ -191,7 +193,7 @@ flowchart LR
 | 你要做什么 | 什么都不用做 | 填一次 API Key |
 | 费用 | 免费 | 按字符计费 |
 | 音色 | 内置中英文若干 | 豆包 2.0 音色库，含声音复刻 |
-| 额外依赖 | `edge-tts==7.2.8`、`imageio-ffmpeg` | **零** —— 只用标准库 `urllib` |
+| 额外依赖 | `edge-tts==7.3.1`、`imageio-ffmpeg` | **零** —— 只用标准库 `urllib` |
 | 什么时候选它 | 默认。开箱可用、够用 | 想要更自然的语气与更好音质 |
 
 选火山时，技能会生成 `tts.env` 并**停下来**让你把 Key 填进去 —— 这一步刻意不经过对话窗口：

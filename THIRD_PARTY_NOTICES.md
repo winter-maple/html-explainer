@@ -28,7 +28,7 @@
 
 | 组件 | 版本（已测） | 许可 | 上游 |
 |---|---|---|---|
-| `edge-tts` | 7.2.8（钉死） | LGPL-3.0 | <https://github.com/rany2/edge-tts> |
+| `edge-tts` | 7.3.1（钉死） | LGPL-3.0 | <https://github.com/rany2/edge-tts> |
 | `playwright-core` | 1.63.0 | Apache-2.0 | <https://github.com/microsoft/playwright> |
 | `numpy` | 2.5.3 | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | <https://numpy.org> |
 | `pillow` | 12.3.0 | MIT-CMU | <https://python-pillow.org> |
@@ -39,7 +39,7 @@
 的方式使用它们，不做静态链接，也不分发修改过的副本。如果你打算再分发一个**打包的** ffmpeg
 二进制构建，请先看 FFmpeg 自己的许可页面 —— 编译选项决定该二进制属于 LGPL 还是 GPL。
 
-`edge-tts` 是**刻意**钉在 `7.2.8` 的：7.x 系列在其语音边界 API 上有过破坏性变更，而本项目
+`edge-tts` 是**刻意**钉在 `7.3.1` 的：7.x 系列在其语音边界 API 上有过破坏性变更，而本项目
 依赖 `WordBoundary` 事件。
 
 ---

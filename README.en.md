@@ -115,6 +115,8 @@ On Windows `~` is `C:\Users\<you>`.
 > actually have; the skill does not care about its own name.
 > Keep **project paths ASCII** — Windows ffmpeg reads UTF-8 as ANSI and non-ASCII paths break
 > the render stage.
+> **Chinese Windows consoles**: set `PYTHONUTF8=1=1` before running the Python
+> scripts (CI already does); they print `✓/✗`, which can raise `UnicodeEncodeError` under GBK.
 
 ### Skills directory by agent
 
@@ -137,7 +139,7 @@ exception and only reads `.claude/skills/`.)
 
 | Item | Minimum | Notes |
 |---|---|---|
-| Python | 3.9+ | `edge-tts==7.2.8` (pinned deliberately — v7 changed the boundary API), `numpy`, `pillow`, `imageio-ffmpeg`. **The Volcano engine needs nothing extra** (stdlib `urllib` only, no SDK) |
+| Python | 3.9+ | `edge-tts==7.3.1` (pinned deliberately — v7 changed the boundary API), `numpy`, `pillow`, `imageio-ffmpeg`. **The Volcano engine needs nothing extra** (stdlib `urllib` only, no SDK) |
 | Node.js | 18+ | Used by the renderer and the cover builder |
 | Browser | Chrome or Edge | Auto-detected; playwright chromium (~115MB, one time) only if neither exists |
 | ffmpeg | any version | Looked up on `PATH`; falls back to the static binary bundled with `imageio-ffmpeg` |
@@ -221,7 +223,7 @@ The agent will not choose these for you — the choices are written to `consent.
 | What you do | nothing | paste an API Key once |
 | Cost | free | billed per character |
 | Voices | a set of built-in zh/en voices | Doubao 2.0 voice library, incl. voice cloning |
-| Extra deps | `edge-tts==7.2.8`, `imageio-ffmpeg` | **none** — stdlib `urllib` only |
+| Extra deps | `edge-tts==7.3.1`, `imageio-ffmpeg` | **none** — stdlib `urllib` only |
 | When to pick it | default; works out of the box | when you want more natural prosody / better quality |
 
 With Volcano, the skill **creates a `tts.env` and stops** so you can paste the key into it — that
