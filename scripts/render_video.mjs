@@ -514,6 +514,9 @@ async function main() {
 
   const browserExec = args.browser || resolveBrowserExec();
   const launchOpts = { viewport: { width: pjW, height: pjH }, deviceScaleFactor: scale };
+  // ★ 必须把探测到的系统浏览器传给 launch —— playwright-core 不自带浏览器，
+  //   漏掉这一行会去 launch 未安装的 chromium_headless_shell（日志却仍显示系统 Chrome）。
+  if (browserExec) launchOpts.executablePath = browserExec;
 
   log(`项目：${projectDir}`);
   log(`档位：${profName} · 场景 ${scenes.length} 个 · ${renderSec.toFixed(2)}s · ${totalFrames} 帧 @${fps}fps`);
